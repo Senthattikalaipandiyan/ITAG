@@ -167,7 +167,7 @@ if uploaded_file is not None:
 * Move pieces along the outer track toward the inner victory square.
 * Land on opponent pieces to eliminate them back to the start.
 """,
-                    "video": "https://www.youtube.com/watch?v=YOUR_THAYAM_VIDEO_ID"
+                    "video": "https://www.youtube.com/watch?v=p_XEhnaYyIk"
                 },
                 "Spinning Top": {
                     "rules": """
@@ -175,7 +175,7 @@ if uploaded_file is not None:
 * Throw the top forward while pulling the cord backward to initiate spin.
 * Catch the spinning top on the palm or string to perform tricks.
 """,
-                    "video": "https://www.youtube.com/watch?v=YOUR_SPINNING_TOP_VIDEO_ID"
+                    "video": "https://www.youtube.com/watch?v=sI_ca9lTvMU"
                 },
                 "Seven Stones": {
                     "rules": """
@@ -183,7 +183,7 @@ if uploaded_file is not None:
 * Once knocked down, seekers must rebuild the stack while avoiding being hit by the ball.
 * Hitters pass the ball among teammates to strike seekers before the stack is restored.
 """,
-                    "video": "https://www.youtube.com/watch?v=YOUR_SEVEN_STONES_VIDEO_ID"
+                    "video": "https://www.youtube.com/watch?v=aZfE6nlFLkY"
                 },
                 "Snakes and Ladders": {
                     "rules": """
@@ -191,7 +191,7 @@ if uploaded_file is not None:
 * Ladders allow you to climb directly to higher squares.
 * Landing on a snake's head forces you to slide down to its tail.
 """,
-                    "video": "https://www.youtube.com/watch?v=YOUR_SNAKES_LADDERS_VIDEO_ID"
+                    "video": "https://www.youtube.com/watch?v=a-kTZF2EEKc"
                 },
                 "Thattangal": {
                     "rules": """
@@ -199,7 +199,7 @@ if uploaded_file is not None:
 * Pick up target stones from the floor while the tossed stone is airborne.
 * Catch the tossed stone before it hits the ground without dropping collected stones.
 """,
-                    "video": "https://www.youtube.com/watch?v=YOUR_THATTANGAL_VIDEO_ID"
+                    "video": "https://www.youtube.com/watch?v=Mq7t4v5maeo"
                 }
             }
 
