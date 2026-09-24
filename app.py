@@ -103,7 +103,7 @@ uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png
 if uploaded_file is not None:
     # Display the original upload
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Original Upload", use_column_width=True)
+    st.image(image, caption="Original Upload", use_container_width=True)
     
     with st.spinner("Running PyTorch Inference..."):
         # 3. Preprocess the image exactly like your dataloader
@@ -153,7 +153,7 @@ if uploaded_file is not None:
             # Convert back to RGB and display the final result in the browser
             result_img = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
             st.success("Detection Complete!")
-            st.image(result_img, caption="Inference Result", use_column_width=True)
+            st.image(result_img, caption="Inference Result", use_container_width=True)
 
             # --- GAME RULES & VIDEO TUTORIAL ---
             st.markdown("---")
