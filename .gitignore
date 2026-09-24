@@ -9,6 +9,7 @@ __pycache__/
 IndianGamesDataset/
 Augmented/
 scratch/
+*.zip
 
 # Environments
 .env
