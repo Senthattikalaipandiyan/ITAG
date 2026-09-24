@@ -7,6 +7,13 @@ import numpy as np
 from PIL import Image
 from pathlib import Path
 
+# Page Configuration (Wide layout for clean side-by-side row display)
+st.set_page_config(
+    page_title="Indian Traditional Games Detector",
+    page_icon="🎯",
+    layout="wide"
+)
+
 # Base Paths
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "indian_games_detector.pth"
@@ -101,9 +108,7 @@ st.write("Upload a raw image to test the custom Single-Shot CNN.")
 uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Display the original upload
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Original Upload", use_container_width=True)
     
     with st.spinner("Running PyTorch Inference..."):
         # 3. Preprocess the image exactly like your dataloader
@@ -133,8 +138,9 @@ if uploaded_file is not None:
             5: "Snakes and Ladders"
         }
 
-        # 5. Draw the Bounding Box and Label
-        if predicted_class != 0 and confidence > 0.60:
+        # 5. Process Detection and Bounding Box
+        is_detected = (predicted_class != 0 and confidence > 0.60)
+        if is_detected:
             # Convert PIL image to OpenCV BGR format for drawing
             img_cv = np.array(image)
             img_cv = cv2.cvtColor(img_cv, cv2.COLOR_RGB2BGR)
@@ -182,63 +188,74 @@ if uploaded_file is not None:
                 cv2.LINE_AA
             )
             
-            # Convert back to RGB and display the final result in the browser
+            # Convert back to RGB
             result_img = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
-            st.success("Detection Complete!")
-            st.image(result_img, caption="Inference Result", use_container_width=True)
 
-            # --- GAME RULES & VIDEO TUTORIAL ---
-            st.markdown("---")
-            st.header(f"How to Play: {class_map[predicted_class]}")
+    # Display Uploaded Image and Detected Result in the SAME ROW
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Uploaded Image")
+        st.image(image, caption="Original Upload", use_container_width=True)
 
-            game_tutorials = {
-                "Thayam": {
-                    "rules": """
+    with col2:
+        st.subheader("Detected Object")
+        if is_detected:
+            st.image(result_img, caption=f"Result: {class_map[predicted_class]} ({confidence*100:.1f}%)", use_container_width=True)
+            st.success(f"Detection Complete! **{class_map[predicted_class]}** ({confidence*100:.1f}%)")
+        else:
+            st.image(image, caption="No Detections", use_container_width=True)
+            st.warning(f"No objects detected. (Highest match: {class_map[predicted_class]} at {confidence*100:.1f}%)")
+
+    # --- GAME RULES & VIDEO TUTORIAL ---
+    if is_detected:
+        st.markdown("---")
+        st.header(f"How to Play: {class_map[predicted_class]}")
+
+        game_tutorials = {
+            "Thayam": {
+                "rules": """
 * Roll the dice to enter coins onto the board.
 * A roll of 1 (Dhaayam) is required to release a piece from the home base.
 * Move pieces along the outer track toward the inner victory square.
 * Land on opponent pieces to eliminate them back to the start.
 """,
-                    "video": "https://www.youtube.com/watch?v=p_XEhnaYyIk"
-                },
-                "Spinning Top": {
-                    "rules": """
+                "video": "https://www.youtube.com/watch?v=p_XEhnaYyIk"
+            },
+            "Spinning Top": {
+                "rules": """
 * Wrap the cord tightly around the top starting from the peg.
 * Throw the top forward while pulling the cord backward to initiate spin.
 * Catch the spinning top on the palm or string to perform tricks.
 """,
-                    "video": "https://www.youtube.com/watch?v=sI_ca9lTvMU"
-                },
-                "Seven Stones": {
-                    "rules": """
+                "video": "https://www.youtube.com/watch?v=sI_ca9lTvMU"
+            },
+            "Seven Stones": {
+                "rules": """
 * Seekers attempt to knock down the stack of seven stones using a ball.
 * Once knocked down, seekers must rebuild the stack while avoiding being hit by the ball.
 * Hitters pass the ball among teammates to strike seekers before the stack is restored.
 """,
-                    "video": "https://www.youtube.com/watch?v=aZfE6nlFLkY"
-                },
-                "Snakes and Ladders": {
-                    "rules": """
+                "video": "https://www.youtube.com/watch?v=aZfE6nlFLkY"
+            },
+            "Snakes and Ladders": {
+                "rules": """
 * Roll the die to advance across the numbered squares from 1 to 100.
 * Ladders allow you to climb directly to higher squares.
 * Landing on a snake's head forces you to slide down to its tail.
 """,
-                    "video": "https://www.youtube.com/watch?v=a-kTZF2EEKc"
-                },
-                "Thattangal": {
-                    "rules": """
+                "video": "https://www.youtube.com/watch?v=a-kTZF2EEKc"
+            },
+            "Thattangal": {
+                "rules": """
 * Toss one stone into the air with one hand.
 * Pick up target stones from the floor while the tossed stone is airborne.
 * Catch the tossed stone before it hits the ground without dropping collected stones.
 """,
-                    "video": "https://www.youtube.com/watch?v=Mq7t4v5maeo"
-                }
+                "video": "https://www.youtube.com/watch?v=Mq7t4v5maeo"
             }
+        }
 
-            selected_game = game_tutorials.get(class_map[predicted_class])
-            if selected_game:
-                st.markdown(selected_game["rules"])
-                st.video(selected_game["video"])
-
-        else:
-            st.warning(f"No objects detected. (Highest match: {class_map[predicted_class]} at {confidence*100:.1f}%)")
+        selected_game = game_tutorials.get(class_map[predicted_class])
+        if selected_game:
+            st.markdown(selected_game["rules"])
+            st.video(selected_game["video"])
