@@ -145,10 +145,42 @@ if uploaded_file is not None:
             x1, y1 = int(box[0] * width), int(box[1] * height)
             x2, y2 = int(box[2] * width), int(box[3] * height)
             
-            # Draw the red rectangle and text
-            cv2.rectangle(img_cv, (x1, y1), (x2, y2), (0, 0, 255), 3)
+            # Dynamic scaling proportional to image resolution
+            box_thick = max(4, int(min(width, height) / 150))
+            font_scale = max(1.2, min(width, height) / 450)
+            font_thick = max(2, int(font_scale * 2.2))
+
+            # Draw the thick red rectangle
+            cv2.rectangle(img_cv, (x1, y1), (x2, y2), (0, 0, 255), box_thick)
             label = f"{class_map[predicted_class]} ({confidence*100:.1f}%)"
-            cv2.putText(img_cv, label, (x1, y1 - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+            # Compute text dimensions for filled banner
+            (tw, th), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thick)
+            pad_x = max(6, int(font_scale * 8))
+            pad_y = max(6, int(font_scale * 8))
+            text_y = max(th + pad_y + 10, y1 - pad_y)
+            text_x = max(10, x1)
+
+            # Draw high-visibility filled red banner for label
+            cv2.rectangle(
+                img_cv,
+                (text_x - pad_x, text_y - th - pad_y),
+                (text_x + tw + pad_x, text_y + baseline + pad_y // 2),
+                (0, 0, 255),
+                cv2.FILLED
+            )
+
+            # Draw crisp bold white text inside the red banner
+            cv2.putText(
+                img_cv,
+                label,
+                (text_x, text_y),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                font_scale,
+                (255, 255, 255),
+                font_thick,
+                cv2.LINE_AA
+            )
             
             # Convert back to RGB and display the final result in the browser
             result_img = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
